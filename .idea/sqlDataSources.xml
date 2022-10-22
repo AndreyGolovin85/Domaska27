@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="29eab8c2-9e0b-4e55-b9ee-fccc7a5b1035" name="avito_db Mapping">
+      <data-sources db="a58cbd33-9a95-43e6-ada0-42ca962b20a5" />
+      <scope>
+        <node kind="database" negative="1">
+          <node kind="schema" negative="1" />
+        </node>
+      </scope>
+    </mapping>
+  </component>
+</project>

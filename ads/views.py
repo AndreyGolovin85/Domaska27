@@ -88,7 +88,7 @@ class AdListView(ListView):
         self.object_list.order_by("-price")
         paginator = Paginator(object_list=self.object_list, per_page=settings.TOTAL_ON_PAGE)
         page = request.GET.get("page")
-        page_obj = paginator.get_page("page")
+        page_obj = paginator.get_page(page)
         result = []
         for ad in page_obj:
             result.append({"id": ad.id,
@@ -150,6 +150,25 @@ class AdUploadImageView(UpdateView):
                             safe=False, json_dumps_params={"ensure_ascii": False})
 
 
+@method_decorator(csrf_exempt, name="dispatch")
+class AdUpdateView(UpdateView):
+    model = Ad
+    fields = ["name", "author", "category", "price", "description", "is_published"]
+
+    def patch(self, request, *args, **kwargs):
+        super().post(request, *args, **kwargs)
+        data = json.loads(request.body)
+        self.object.name = data["name"]
+        self.object.author = data["author"]
+        self.object.category = data["category"]
+        self.object.price = data["price"]
+        self.object.description = data["description"]
+        self.object.is_published = data["is_published"]
+        self.object.seve()
+        return JsonResponse({"id": self.object.id, "name": self.name},
+                            safe=False, json_dumps_params={"ensure_ascii": False})
+
+
 class AdDetailView(DetailView):
     model = Ad
 
@@ -158,3 +177,13 @@ class AdDetailView(DetailView):
         return JsonResponse({"id": ad.id, "name": ad.name, "author": ad.author, "price": ad.price,
                              "description": ad.description, "is_published": ad.is_published},
                             safe=False, json_dumps_params={"ensure_ascii": False})
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class AdDeleteView(DeleteView):
+    model = Ad
+    success_url = "/"
+
+    def delete(self, request, *args, **kwargs):
+        super().delete(request, *args, **kwargs)
+        return JsonResponse({}, status=200)
